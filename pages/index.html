@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Deploy Static Website on AWS using EC2 & Terraform</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Georgia', serif;
+      background: #f4f1ec;
+      color: #333;
+      padding: 40px 15px;
+    }
+
+    .book {
+      max-width: 800px;
+      margin: auto;
+      background: #fff;
+      padding: 40px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      border: 1px solid #ccc;
+    }
+
+    .logo {
+      display: block;
+      margin: 0 auto 30px auto;
+      max-width: 150px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2.2em;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      color: #2c3e50;
+      margin-top: 35px;
+      border-bottom: 2px solid #ecf0f1;
+      padding-bottom: 5px;
+    }
+
+    p, pre {
+      font-size: 1.05em;
+      line-height: 1.8;
+    }
+
+    code {
+      background-color: #f0f0f0;
+      padding: 2px 5px;
+      border-radius: 3px;
+      color: #c0392b;
+    }
+
+    pre {
+      background-color: #f8f8f8;
+      padding: 15px;
+      border-radius: 8px;
+      overflow-x: auto;
+      border: 1px solid #ddd;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 50px;
+      font-size: 0.9em;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+  <div class="book">
+    <img src="logo.png" alt="Terraform Logo" class="logo" />
+
+    <h1>Deploy a Static Website on AWS using EC2 & Terraform</h1>
+
+    <h2>🧰 Prerequisites</h2>
+    <p>
+      - AWS Account<br>
+      - EC2 Key Pair<br>
+      - Terraform installed<br>
+      - A static website (HTML/CSS files)
+    </p>
+
+    <h2>🛠 Step 1: Setup Terraform Project</h2>
+    <pre><code>
+mkdir my-website-deploy
+cd my-website-deploy
+touch main.tf variables.tf outputs.tf
+    </code></pre>
+
+    <h2>📝 Step 2: Define Terraform Configuration</h2>
+    <pre><code>
+# main.tf
+provider "aws" {
+  region = "us-east-1"
+}t
+
+resource "aws_instance" "web" {
+  ami           = "ami-0c02fb55956c7d316"  # Amazon Linux 2
+  instance_type = "t2.micro"
+  key_name      = "your-key-name"
+
+  user_data = file("deploy.sh")
+
+  tags = {
+    Name = "StaticWebServer"
+  }
+}
+    </code></pre>
+
+    <h2>📜 Step 3: Create deploy.sh for setup</h2>
+    <pre><code>
+#!/bin/bash
+sudo yum update -y
+sudo yum install httpd -y
+sudo systemctl enable httpd
+sudo systemctl start httpd
+cd /var/www/html
+echo "Your HTML will be served from here!" > index.html
+    </code></pre>
+
+    <h2>⚙️ Step 4: Initialize and Apply Terraform</h2>
+    <pre><code>
+terraform init
+terraform apply
+    </code></pre>
+
+    <h2>🌐 Step 5: Access the Website</h2>
+    <p>
+      Find the public IP from the EC2 instance in Terraform output and visit:
+      <br><code>http://your-public-ip</code>
+    </p>
+
+    <h2>🎉 Done!</h2>
+    <p>Your static site is now live on AWS EC2 using Terraform!</p>
+
+    <footer>
+      &copy; 2025 | Static Website Deployment Guide by ChatGPT
+    </footer>
+  </div>
+</body>
+</html>
